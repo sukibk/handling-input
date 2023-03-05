@@ -1,31 +1,47 @@
-import {useState} from "react";
+import { useReducer } from "react";
+
+const inputStateReducer = (state, action) => {
+        if(action.type === 'INPUT'){
+            return {value: action.value, isTouched: state.isTouched};}
+            if (action.type === 'BLUR') {
+                return {isTouched: true, value: state.value};
+            }
+            if (action.type === 'RESET') {
+                return {isTouched: false, value: ''};
+            }
+
+    return {
+        value: '',
+        isTouched: false,
+    }
+}
 
 export default function useInput(validationFunction){
-    const [enteredInput, setEnteredInput] = useState('');
-    const [inputFieldVisited, setInputFieldVisited] = useState(false);
     let style = `form-control`;
 
-    const inputIsValid = validationFunction(enteredInput);
+    const [inputState, dispatchInputState] = useReducer(inputStateReducer, {value: '', isTouched: false})
 
-    if(!inputIsValid && inputFieldVisited) style = style + ` invalid`
+    const inputIsValid = validationFunction(inputState.value);
+
+    if(!inputIsValid && inputState.isTouched) style = style + ` invalid`
 
     const inputHandler = e => {
-        setEnteredInput(e.target.value);
-        setInputFieldVisited(true);
+        // setEnteredInput(e.target.value);
+        // setInputFieldVisited(true);
+        dispatchInputState({type: 'INPUT', value: e.target.value});
     }
 
     const inputBlurHandler = () => {
-        setInputFieldVisited(true);
+        dispatchInputState({type: 'BLUR'});
     }
 
     const reset = () => {
-        setInputFieldVisited(false);
-        setEnteredInput('');
+        dispatchInputState({type: 'RESET'});
     }
 
     return {
         inputIsValid,
-        enteredInput,
+        enteredInput: inputState.value,
         style,
         inputHandler,
         inputBlurHandler,

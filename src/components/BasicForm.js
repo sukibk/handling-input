@@ -34,7 +34,7 @@ const BasicForm = (props) => {
     const submitFormHandler = (e) =>{
         e.preventDefault();
 
-        if(!isFormValid)  //Important for security
+        if(!isFormValid){return}  //Important for security
 
         nameReset();
         mailReset();
