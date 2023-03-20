@@ -29,6 +29,7 @@ const BasicForm = (props) => {
     //Form
     let isFormValid = false;
 
+
     if(nameIsValid && lastIsValid && mailIsValid) isFormValid = true;
 
     const submitFormHandler = (e) =>{
